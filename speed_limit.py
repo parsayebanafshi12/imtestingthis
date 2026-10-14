@@ -1,7 +1,3 @@
-# speed_limit.py
-# محدودیت سرعت (Bandwidth Throttling) به‌ازای هر کانفیگ — پیاده‌سازی با الگوی Token Bucket
-# جدا شده از relay_vless.py و xhttp_siz10.py؛ هر دو این ماژول رو صدا می‌زنن (منطق اونا دست‌نخورده).
-
 import asyncio
 import time
 
@@ -10,8 +6,8 @@ from main import LINKS
 # هر uuid یک Bucket جدا داره؛ Bucket با نرخ صفر (بدون محدودیت) اصلاً ساخته نمی‌شه.
 _buckets: dict = {}
 
-MIN_RATE = 1024          # حداقل نرخ برای جلوگیری از تقسیم بر صفر یا سرعت‌های غیرمنطقی (1 KB/s)
-MIN_BURST = 16 * 1024    # حداقل ظرفیت بافر burst (برای اینکه چانک‌های کوچیک بی‌دلیل صف نکشن)
+MIN_RATE = 1024
+MIN_BURST = 16 * 1024
 
 
 class _Bucket:
