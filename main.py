@@ -38,9 +38,9 @@ if __name__ == "__main__":
     sys.modules.setdefault("main", sys.modules[__name__])
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
-APP_NAME = "VPN Panel"
+APP_NAME = "MyApp"
 APP_VERSION = "2.0.0"
-logger = logging.getLogger("VPNPanel")
+logger = logging.getLogger("myapp")
 
 IRAN_TZ = ZoneInfo("Asia/Tehran")
 
@@ -63,8 +63,8 @@ def _resolve_data_dir() -> Path:
     return Path(os.path.dirname(os.path.abspath(__file__))) / "data"
 
 DATA_DIR = _resolve_data_dir()
-DATA_FILE = DATA_DIR / "panel_state.json"
-SECRET_FILE = DATA_DIR / "panel_secret.key"
+DATA_FILE = DATA_DIR / "app_state.json"
+SECRET_FILE = DATA_DIR / "app_secret.key"
 HOST_FILE = DATA_DIR / "host.txt"    # persisted detected public host (survives restarts)
 SAVE_LOCK = asyncio.Lock()
 
@@ -130,10 +130,6 @@ CONFIG = {
 TRUST_PROXY_HEADERS = os.environ.get("TRUST_PROXY_HEADERS", "false").lower() in {"1", "true", "yes"}
 ALLOWED_PUBLIC_HOSTS = {x.strip().split(":", 1)[0].lower() for x in os.environ.get("ALLOWED_PUBLIC_HOSTS", "").split(",") if x.strip()}
 
-# ── Trusted reverse-proxy allowlist (IP spoofing defense) ────────────────────
-# Client-supplied X-Forwarded-For / X-Real-IP are only honoured when the TCP peer
-# that opened the connection is a proxy we explicitly trust. Empty = trust nobody,
-# so the socket peer address is always the authoritative client IP.
 TRUSTED_PROXIES: set[str] = {
     x.strip().lower() for x in os.environ.get("TRUSTED_PROXIES", "").split(",") if x.strip()
 }
@@ -189,6 +185,7 @@ app.add_middleware(
     allow_headers=["Content-Type", "X-Requested-With"],
 )
 
+# Def Load state
 async def load_state():
     global LINKS, AUTH, SUBS, CATEGORIES
     try:
